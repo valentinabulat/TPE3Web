@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 module TPEWeb.com/TPEWeb
+=======
+module TPE3Web.com/TPE3Web
+>>>>>>> main
 
 go 1.24.6
 
