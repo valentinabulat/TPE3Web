@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"log"
@@ -37,15 +36,15 @@ func main() {
 
 	// crear insancias de queries
 	queries := db.New(dbconn)
-	ctx := context.Background()
+	//ctx := context.Background()
 
 	// crear instancia de api
 	api := handlers.NewAPI(queries)
 
 	mux := http.NewServeMux()
 	// configurar endpoints
-	mux.HandleFunc("/products", api.productsHandler)
-	mux.HandleFunc("/products/", api.productHandler)
+	mux.HandleFunc("/products", api.ProductsHandler)
+	mux.HandleFunc("/products/", api.ProductHandler)
 
 	// iniciar servidor
 	fmt.Println("Servidor escuchando en el puerto 8080")
