@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"os"
 
-	"TPE3Web.com/TPE3Web/pkg/handlers"
+	"github.com/valentinabulat/TPE3Web/pkg/handlers"
 
-	"TPE3Web.com/TPE3Web/internal/db"
 	_ "github.com/lib/pq"
+	"github.com/valentinabulat/TPE3Web/internal/db"
 )
 
 func main() {
