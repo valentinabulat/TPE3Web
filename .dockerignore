@@ -1,0 +1,45 @@
+# Archivos y carpetas de Git
+.git
+.gitignore
+
+# Archivos de IDE y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Archivos temporales y binarios
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Carpetas de dependencias y builds
+/vendor/
+/bin/
+/tmp/
+
+# Archivos de logs
+*.log
+
+# Archivos de configuración local que no deberían ir en el contenedor
+.env
+.env.local
+*.local
+
+# Archivos de documentación y desarrollo
+README.md
+docs/
+*.md
+
+# Archivos de prueba
+tests/
+*.test.go
+
+# Archivos Docker
+Dockerfile
+docker-compose.yml

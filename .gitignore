@@ -1,0 +1,31 @@
+# Binarios compilados
+*.exe
+*.exe~
+server
+
+# Variables de entorno y configuración local
+.env
+.env.local
+*.local
+
+# Archivos temporales
+/tmp/
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*~
+
+# Logs
+*.log
+
+# Código generado por sqlc
+/internal/db/
+
+# Archivos de base de datos local (si usas SQLite para desarrollo)
+*.db
+*.sqlite
+
+# Si usas Air para hot reload
+.air.toml
