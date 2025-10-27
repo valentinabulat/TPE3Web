@@ -4,8 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-
-	//"os"
+	"os"
 
 	"github.com/valentinabulat/TPE3Web/pkg/handlers"
 
@@ -24,18 +23,18 @@ func main() {
 	defer dbconn.Close()
 
 	// desde aca
-	/*
-		schemaSQL, err := os.ReadFile("db/schema/schema.sql")
-		if err != nil {
-			log.Fatalf("failed to read schema.sql: %v", err)
-		}
 
-		_, err = dbconn.Exec(string(schemaSQL))
-		if err != nil {
-			log.Fatalf("failed to execute schema: %v", err)
-		}
-		log.Println("Schema ejecutado correctamente")
-	*/
+	schemaSQL, err := os.ReadFile("db/schema/schema.sql")
+	if err != nil {
+		log.Fatalf("failed to read schema.sql: %v", err)
+	}
+
+	_, err = dbconn.Exec(string(schemaSQL))
+	if err != nil {
+		log.Fatalf("failed to execute schema: %v", err)
+	}
+	log.Println("Schema ejecutado correctamente")
+
 	// hasta aca
 	// hacerlo con migraciones? para no crear la tabla cada vez que se corre el programa
 

@@ -1,10 +1,10 @@
-CREATE TABLE producto (
+CREATE TABLE IF NOT EXISTS producto (
     ID SERIAL PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     descripcion VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE lista_productos (
+CREATE TABLE IF NOT EXISTS lista_productos (
     ID SERIAL PRIMARY KEY,
     ID_producto INT NOT NULL REFERENCES producto(ID),
     cantidad INT NOT NULL, 

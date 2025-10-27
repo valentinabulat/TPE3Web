@@ -40,7 +40,7 @@ test: start_db
 stop:
 	@echo "Deteniendo servicios..."
 	@-pkill $(APP_NAME)
-	@-docker compose down 
+	@-docker compose down -v
 	@echo "Servicios detenidos"
 
 # Limpiar archivos generados

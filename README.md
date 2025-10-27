@@ -1,6 +1,6 @@
-#TPEWeb
+# TPEWeb
 
-Requisitos
+### Requisitos
 	- Go 
 	- sqlc
     - Docker 
@@ -8,7 +8,7 @@ Requisitos
 	- Air (go install github.com/cosmtrek/air@latest)
 	- Hurl
 
-Estructura del proyecto:
+### Estructura del proyecto:
 
 	TPEWeb/
 	| ├── cmd/
@@ -35,7 +35,7 @@ Estructura del proyecto:
 	└── sqlc.yaml
 
 
-Ejecucion:
+### Comandos de ejecucion:
 make start_db     - Inicia la base de datos PostgreSQL
 make generate     - Genera código con sqlc
 make air         - Inicia el servidor con air
@@ -44,32 +44,18 @@ make build       - Compila e inicia la API
 make test        - Ejecuta los tests con Hurl
 make stop        - Detiene todos los servicios
 make clean       - Limpia archivos generados
+make help		 - Ver todos los comandos disponibles
 
-
-Ejecutar:
-Configurar la base de datos:
-docker run --name some-postgres -e POSTGRES_PASSWORD=XYZ -p 5432:5432 -d docker.io/postgres
-
-Conectarse a la base de datos:
-docker exec -it some-postgres psql -h localhost -U postgres
-
-Dentro de psql, crear la base:
-CREATE DATABASE midb;
-CREATE USER admin WITH PASSWORD 'admin';
-GRANT ALL PRIVILEGES ON DATABASE midb TO admin;
-\c midb
-GRANT ALL ON SCHEMA public TO admin;
-\q
-
-Generar codigo en go:
-sqlc generate
-
-Instalar dependencias de go:
-go get github.com/lib/pq
-
-Ejecutar archivo main.go:
-go run main
-
+### Orden de ejecucion recomendado
+Iniciar base, generar sqlc e iniciar servidor:
+- make start_db
+- make generate
+- make start_server
+En una nueva terminal:
+- make test
+Luego de ejecutar los test:
+- make stop
+- make clean
 
 
 Autores:
