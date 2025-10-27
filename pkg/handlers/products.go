@@ -44,6 +44,11 @@ func (a *API) ProductsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if params.Titulo == "" || params.Descripcion == "" || params.Cantidad <= 0 {
+			http.Error(w, "Faltan campos obligatorios", http.StatusBadRequest)
+			return
+		}
+
 		listaProductoFlat, err := a.queries.CreateProducto(r.Context(), params)
 		if err != nil {
 			http.Error(w, "Error al crear el producto", http.StatusInternalServerError)
@@ -120,32 +125,38 @@ func (a *API) getProducto(w http.ResponseWriter, r *http.Request, id int32) {
 
 // updateProducto maneja las peticiones PUT para actualizar un producto.
 func (a *API) updateProducto(w http.ResponseWriter, r *http.Request, id int32) {
-	err := a.queries.UpdateProducto(r.Context(), id)
+	var prodAct db.UpdateProductoRow
+	prodAct, err := a.queries.UpdateProducto(r.Context(), id)
 
 	if err == sql.ErrNoRows {
-		http.Error(w, "Product not found to update", http.StatusNotFound)
+		http.Error(w, "Product not found to update", http.StatusNotFound) //404
 		return
 	}
 	if err != nil {
-		http.Error(w, "Database error", http.StatusInternalServerError)
+		http.Error(w, "Database error", http.StatusInternalServerError) //500
 		return
 	}
 
-	//w.Header().Set("Content-Type", "application/json")
-	//json.NewEncoder(w).Encode() // No es necesario devolver el producto actualizado????
-	w.WriteHeader(http.StatusNoContent)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200 OK
+	json.NewEncoder(w).Encode(prodAct)
 }
 
 // deleteProducto maneja las peticiones DELETE para eliminar un producto.
 func (a *API) deleteProducto(w http.ResponseWriter, r *http.Request, id int32) {
-	err := a.queries.DeleteProducto(r.Context(), id)
-
-	if err == sql.ErrNoRows {
-		http.Error(w, "Product not found to delete", http.StatusNotFound)
-		return
-	}
+	result, err := a.queries.DeleteProducto(r.Context(), id)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+	if rowsAffected == 0 {
+		http.Error(w, "Product not found to delete", http.StatusNotFound)
 		return
 	}
 

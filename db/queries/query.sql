@@ -22,11 +22,15 @@ FROM nuevo_producto
 RETURNING *;
 
 
--- name: UpdateProducto :exec
+-- name: UpdateProducto :one
 UPDATE lista_productos
 SET comprado = true
-WHERE ID = $1;
+FROM producto p
+WHERE 
+    lista_productos.ID_producto = p.ID AND 
+    lista_productos.ID = $1
+RETURNING p.ID, p.titulo, p.descripcion, lista_productos.cantidad, lista_productos.comprado;
 
--- name: DeleteProducto :exec
+-- name: DeleteProducto :execresult
 DELETE FROM lista_productos
 WHERE ID = $1;

@@ -40,14 +40,13 @@ func (q *Queries) CreateProducto(ctx context.Context, arg CreateProductoParams) 
 	return i, err
 }
 
-const deleteProducto = `-- name: DeleteProducto :exec
+const deleteProducto = `-- name: DeleteProducto :execresult
 DELETE FROM lista_productos
 WHERE ID = $1
 `
 
-func (q *Queries) DeleteProducto(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteProducto, id)
-	return err
+func (q *Queries) DeleteProducto(ctx context.Context, id int32) (sql.Result, error) {
+	return q.db.ExecContext(ctx, deleteProducto, id)
 }
 
 const getProducto = `-- name: GetProducto :one
@@ -122,13 +121,33 @@ func (q *Queries) ListProductos(ctx context.Context) ([]ListProductosRow, error)
 	return items, nil
 }
 
-const updateProducto = `-- name: UpdateProducto :exec
+const updateProducto = `-- name: UpdateProducto :one
 UPDATE lista_productos
 SET comprado = true
-WHERE ID = $1
+FROM producto p
+WHERE 
+    lista_productos.ID_producto = p.ID AND 
+    lista_productos.ID = $1
+RETURNING p.ID, p.titulo, p.descripcion, lista_productos.cantidad, lista_productos.comprado
 `
 
-func (q *Queries) UpdateProducto(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, updateProducto, id)
-	return err
+type UpdateProductoRow struct {
+	ID          int32
+	Titulo      string
+	Descripcion string
+	Cantidad    int32
+	Comprado    sql.NullBool
+}
+
+func (q *Queries) UpdateProducto(ctx context.Context, id int32) (UpdateProductoRow, error) {
+	row := q.db.QueryRowContext(ctx, updateProducto, id)
+	var i UpdateProductoRow
+	err := row.Scan(
+		&i.ID,
+		&i.Titulo,
+		&i.Descripcion,
+		&i.Cantidad,
+		&i.Comprado,
+	)
+	return i, err
 }

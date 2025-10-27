@@ -38,7 +38,7 @@ variable "current_count" > {{initial_count}} # chequear que sea mayor al inicial
 
 # 5. Actualizar el producto
 PUT http://localhost:8080/products/{{product_id}}
-HTTP 204 # no devuelve nada (204 No content)
+HTTP 200 # devuelve el producto actualizado
 
 # 6. Verificar que el producto fue actualizado
 GET http://localhost:8080/products/{{product_id}}
