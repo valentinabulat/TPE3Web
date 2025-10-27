@@ -11,7 +11,7 @@ start_db:
 	docker compose up -d db
 
 generate:
-	@echo "Generando código con sqlc..."
+	@echo "Generando codigo con sqlc..."
 	sqlc generate
 
 # Desarrollo con hot-reload usando Air
@@ -33,8 +33,8 @@ build: generate start_db
 # Ejecutar tests con Hurl
 test: start_db
 	@echo "Ejecutando tests con Hurl..."
-	@echo "Asegúrate de que la API esté corriendo antes de ejecutar los tests"
-	hurl --interactive tests/requests.hurl
+	@echo "Asegurate de que la API este corriendo antes de ejecutar los tests"
+	hurl --verbose tests/requests.hurl
 
 # Detener todos los servicios
 stop:

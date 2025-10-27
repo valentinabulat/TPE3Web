@@ -3,9 +3,9 @@
 Requisitos
 	- Go 
 	- sqlc
-    - Docker compose
+    - Docker 
 	- Make
-	- Air
+	- Air (go install github.com/cosmtrek/air@latest)
 	- Hurl
 
 Estructura del proyecto:

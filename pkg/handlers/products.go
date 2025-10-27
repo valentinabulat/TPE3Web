@@ -3,11 +3,13 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/valentinabulat/TPE3Web/internal/db"
+	"github.com/valentinabulat/TPE3Web/pkg/models"
 )
 
 // API es la struct que contendrá las dependencias, como la conexión a la DB.
@@ -25,6 +27,7 @@ func (a *API) ProductsHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		productos, err := a.queries.ListProductos(r.Context())
 		if err != nil {
+			log.Printf("Error en ListProductos: %v", err)
 			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
 			return
 		}
@@ -33,21 +36,40 @@ func (a *API) ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(productos)
 	case http.MethodPost:
 		var params db.CreateProductoParams
+
 		err := json.NewDecoder(r.Body).Decode(&params)
 		if err != nil {
+			log.Printf("Error en Decode: %v", err)
 			http.Error(w, "Cuerpo de la petición inválido", http.StatusBadRequest)
 			return
 		}
 
-		productoCreado, err := a.queries.CreateProducto(r.Context(), params)
+		listaProductoFlat, err := a.queries.CreateProducto(r.Context(), params)
 		if err != nil {
 			http.Error(w, "Error al crear el producto", http.StatusInternalServerError)
 			return
 		}
+		productoDetalles := models.Producto{
+			ID:          listaProductoFlat.IDProducto, // De Fuente 2
+			Titulo:      params.Titulo,                // De Fuente 1
+			Descripcion: params.Descripcion,           // De Fuente 1
+		}
+
+		// Creamos la respuesta JSON completa
+		respuestaCompleta := models.ListaProducto{
+			ID:         listaProductoFlat.ID,            // De Fuente 2
+			IDProducto: listaProductoFlat.IDProducto,    // De Fuente 2
+			Cantidad:   listaProductoFlat.Cantidad,      // De Fuente 2
+			Comprado:   listaProductoFlat.Comprado.Bool, // De Fuente 2
+			Producto:   &productoDetalles,               // El objeto "cosido"
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated) // devolver un 201 Created.
-		json.NewEncoder(w).Encode(productoCreado)
+		err = json.NewEncoder(w).Encode(respuestaCompleta)
+		if err != nil {
+			log.Printf("Error en Encode: %v", err)
+		}
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
