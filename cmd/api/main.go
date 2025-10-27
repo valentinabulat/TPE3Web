@@ -46,9 +46,12 @@ func main() {
 	api := handlers.NewAPI(queries)
 
 	mux := http.NewServeMux()
+	fs := http.FileServer(http.Dir("./static"))
+
 	// configurar endpoints
 	mux.HandleFunc("/products", api.ProductsHandler)
 	mux.HandleFunc("/products/", api.ProductHandler)
+	mux.Handle("/", fs)
 
 	// iniciar servidor
 	log.Println("Servidor escuchando en el puerto 8080")
