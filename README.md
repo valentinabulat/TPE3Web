@@ -1,12 +1,11 @@
-# TPEWeb
+# TP 4
 
 ### Requisitos
 	- Go 
 	- sqlc
     - Docker 
 	- Make
-	- Air (go install github.com/cosmtrek/air@latest)
-	- Hurl
+
 
 ### Estructura del proyecto:
 
@@ -24,6 +23,10 @@
 	│ │  │   └── products.go
 	│ │  └── models/
 	│ │      └── product.go
+	│ ├── static/
+	│ │  ├── app.js
+	│ │  ├── index.html
+	│ │  └── styles.css
 	│ └── tests/
 	│	   └── requests.hurl
 	├── go.mod
@@ -51,14 +54,13 @@ Iniciar base, generar sqlc e iniciar servidor:
 - make start_db
 - make generate
 - make start_server
-En una nueva terminal:
-- make test
-Luego de ejecutar los test:
+Abrir en el navegador la web app (localhost:8080)
+Luego para eliminar archivos autogenerados, y cerrar la base y el servidor:
 - make stop
 - make clean
 
 
-Autores:
+### Autores:
 - Cordoba Pablo Javier
 - Bulat Maria Valentina
 - Juarez Abril Valentina

@@ -54,6 +54,7 @@ func main() {
 	mux.Handle("/", fs)
 
 	// iniciar servidor
-	log.Println("Servidor escuchando en el puerto 8080")
+	log.Printf("Servidor escuchando en http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
+
 }
