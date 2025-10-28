@@ -123,7 +123,7 @@ func (q *Queries) ListProductos(ctx context.Context) ([]ListProductosRow, error)
 
 const updateProducto = `-- name: UpdateProducto :one
 UPDATE lista_productos
-SET comprado = true
+SET comprado = NOT comprado
 FROM producto p
 WHERE 
     lista_productos.ID_producto = p.ID AND 

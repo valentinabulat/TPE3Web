@@ -1,33 +1,123 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: auto;
-    max-width: 700px;
-    padding: 2rem;
-    line-height: 1.6;
-    background-color: #fba7e9;
-    background-image: url('https://i.pinimg.com/1200x/e7/ab/fe/e7abfe3657f20223d205af5a114cc69d.jpg');
-    background-size: cover;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+   ; align-items: center;
+    margin: auto;
+    max-width: 1200px; 
+    padding: 2rem;
+    min-height: 100vh; /* Asegura que ocupe al menos toda la altura */
+    background: url('https://i.pinimg.com/1200x/e7/ab/fe/e7abfe3657f20223d205af5a114cc69d.jpg')
+    no-repeat center center/cover;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    display: flex;
+    /*flex-direction: column;*/
+    align-items: center;
+    justify-content: center;
+    /*gap: 10 rem;*/
+}
+
 h1, h2 {
     color: #333;
 }
+
 h1 {
     text-align: center;
     margin-bottom: 2rem;
-    text-shadow: 
-        1px 1px 0 rgb(0, 0, 0),   /* Sombra abajo-derecha */
+    text-shadow: 1px 1px 0 rgb(0, 0, 0); 
 }
-section {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+/* [OPTIMIZACIÓN]
+  Tus clases '.app-container' y '.lista-container' eran idénticas.
+  Las he combinado en una sola clase ".card" para no repetir código.
+  En tu HTML, ahora usa <div class="card"> para ambas.
+*/
+.card {
+    /*width: 100%;
+    max-width: 400px;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 0 100px rgba(0,0,0,0.5);
+    border: 3px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+.add-area {
+    flex:1;
+    align-self: flex-start;
+    max-width: 300px;
+    margin-right: 2rem;
+}
+
+.lista-area {
+    flex:2;
+}
+
+.input-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea las etiquetas a la izquierda */
+    width: 100%;
+    gap: 10px;
+}
+
+.input-area input {
+    width: 80%; /* Hacemos que los inputs ocupen todo el ancho */
+    flex: 1;
+    padding: 10px 17px;
+    font-size: 1rem;
+    border: none;
+    outline: none;
+    border-radius: 22px;
+    background: rgba(224, 160, 123, 0.3);
+}
+
+.button-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px; 
+    border-radius: 22px;
+    font-size: 1.1rem;
+    background:  rgba(220, 53, 69,0.5);
+    border: 2px solid rgba(255,255,255,0.18);
+    cursor: pointer;
+    color: antiquewhite;
+    text-align: center;
+    width: 100%;
+    
+}
+.button-add:hover {
+    background-color: rgba(200, 35, 51, 0.5);
+}
+
+.lista-area {
+    width: 100%;
 }
 
 #lista_productos {
     list-style: none; 
-    padding: 0;       
+    padding: 0; 
 }
 
 #lista_productos li {
@@ -37,9 +127,13 @@ section {
     margin-bottom: 0.5rem;
     border-radius: 4px;
     display: flex; 
-    justify-content: space-between; 
-    align-items: center;
+    
+    /* 1. BORRA ESTA LÍNEA */
+    /* justify-content: space-between; */ 
+    
+    align-items: center; /* <-- Esto está perfecto, déjalo */
     transition: background-color 0.2s; 
+    text-align: left; 
 }
 
 /* Estilo para el botón de eliminar */
@@ -49,7 +143,11 @@ section {
     padding: 0.3rem 0.6rem;
     font-size: 0.85rem;
     flex-shrink: 0; 
-    margin-left: 10px;
+    
+    margin-left: auto; 
+    
+    border: none; 
+    border-radius: 4px; 
 }
 .delete-btn:hover {
     background-color: #c82333;
@@ -65,13 +163,13 @@ section {
 
 /* Estilo para el span que contiene el texto */
 #lista_productos li span {
-    flex-grow: 1; 
+    
     transition: color 0.2s;
 }
 
 /* Estilo para el <li> cuando está completado */
 #lista_productos li.completed {
-    background-color: #e8f5e9; 
+    background-color: #f5ece8; 
     border-color: #c8e6c9;
 }
 

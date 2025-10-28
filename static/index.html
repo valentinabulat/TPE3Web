@@ -7,34 +7,43 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <h1>Mi Lista de Compras</h1>
-
-    <section>
-        <h2>Agregar Producto</h2>
-        <form id="crear_lista_productos">
-            <div>
-                <label for="titulo">Nombre:</label>
-                <input type="text" id="titulo" name="titulo" required>
-            </div>
-            <div>
-                <label for="descripcion">Descripción:</label>
-                <input type="text" id="descripcion" name="descripcion" required>
-            </div>
-            <div>
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" id="cantidad" name="cantidad" required>
-            </div>
-            <button type="submit">Agregar Producto</button>
-        </form>
-    </section>
-
-    <section>
-        <h2>Lista de Productos</h2>
+    <h1>Mi Lista de Compras</h1> 
+    <div class="container">
+       
+    <div class="card add-area">    
         
-        <ul id="lista_productos">
-            </ul>
-    </section>
+
+        <section>
+            <h2>Agregar Producto</h2>
+            <form id="crear_lista_productos" class="input-area">
+                <div>
+                    <label for="titulo">Nombre:</label>
+                    <input type="text" id="titulo" name="titulo" required>
+                </div>
+                <div>
+                    <label for="descripcion">Descripción:</label>
+                    <input type="text" id="descripcion" name="descripcion" required>
+                </div>
+                <div>
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" id="cantidad" name="cantidad" required>
+                </div>
+                <button type="submit" class="button-add">Agregar Producto</button>
+            </form>
+        </section>
+    </div>
+    <div class="card list-area">
+        <h2>Lista de Productos</h2>
+        <section>
+            
+            
+            <ul id="lista_productos" class="lista-area">
+                </ul>
+        </section>
+    </div>
+    
+
+    </div>
     <script src="app.js"></script>
 </body>
 </html>
