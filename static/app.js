@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     li.classList.add('completed');
                 }
 
-                //Crea el Checkbox
+                //Crea el checkbox
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'update-checkbox'; // Clase para CSS y JS
@@ -162,8 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-
-    //Configuración Inicial
     
     //Añade el "event listener" al formulario
     entityForm.addEventListener('submit', handleFormSubmit);
