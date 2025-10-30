@@ -3,32 +3,32 @@ const API_URL = 'http://localhost:8080/products';
 //Espera a que el contenido del DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', () => {
     
-    const entityForm = document.getElementById('crear_lista_productos');
-    const entityList = document.getElementById('lista_productos');
+    const formProducto = document.getElementById('crear_lista_productos');
+    const listProductos = document.getElementById('lista_productos');
 
     //Obtiene todos los productos de la API y los muestra en la lista.
     
-    async function fetchAndRenderEntities() {
+    async function fetchAndRenderProductos() {
         try {
             //Pide los productos a la API
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
-            const entities = await response.json();
+            const productos = await response.json();
 
             //Limpia la lista actual antes de dibujar la nueva
-            entityList.innerHTML = '';
+            listProductos.innerHTML = '';
 
-            //Si no hay entidades, muestra un mensaje
-            if (!entities || entities.length === 0) {
-                entityList.innerHTML = '<li>No se encontraron productos.</li>';
+            //Si no hay productos, muestra un mensaje
+            if (!productos || productos.length === 0) {
+                listProductos.innerHTML = '<li>No se encontraron productos.</li>';
                 return;
             }
 
-            //Genera y agrega cada entidad a la lista
-            entities.forEach(entity => {
+            //Genera y agrega cada producto a la lista
+            productos.forEach(producto => {
                 const li = document.createElement('li');
                 
-                if (entity.Completed) { 
+                if (producto.Completed) { 
                     li.classList.add('completed');
                 }
 
@@ -36,16 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'update-checkbox'; // Clase para CSS y JS
-                checkbox.checked = entity.Completed || false; // Marca el check si está completado
-                checkbox.dataset.id = entity.ID; // Almacena el ID en el checkbox
+                checkbox.checked = producto.Completed || false; // Marca el check si está completado
+                checkbox.dataset.id = producto.ID; // Almacena el ID en el checkbox
                 li.appendChild(checkbox);
 
                 //Crea un span para el texto
                 const textSpan = document.createElement('span');
                 textSpan.innerHTML = `
-                    <strong>${entity.Titulo || 'Sin nombre'}:</strong> 
-                    <span>${entity.Descripcion || 'Sin descripción'}</span>
-                    <span>(Cantidad: ${entity.Cantidad || 0})</span>
+                    <strong>${producto.Titulo || 'Sin nombre'}:</strong> 
+                    <span>${producto.Descripcion || 'Sin descripción'}</span>
+                    <span>(Cantidad: ${producto.Cantidad || 0})</span>
                 `;
                 li.appendChild(textSpan);
 
@@ -53,15 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Eliminar';
                 deleteButton.className = 'delete-btn'; // Clase para CSS y JS
-                deleteButton.dataset.id = entity.ID; // Almacena el ID en el botón
+                deleteButton.dataset.id = producto.ID; // Almacena el ID en el botón
                 li.appendChild(deleteButton);
                 
-                entityList.appendChild(li); //agrega el <li> completo al <ul>
+                listProductos.appendChild(li); //agrega el <li> completo al <ul>
             });
 
         } catch (error) {
-            console.error('Error al obtener las entidades:', error);
-            entityList.innerHTML = '<li>Error al cargar la lista.</li>';
+            console.error('Error al obtener los productos:', error);
+            listProductos.innerHTML = '<li>Error al cargar la lista.</li>';
         }
     }
 
@@ -69,14 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleFormSubmit(event) {
          event.preventDefault(); 
         
-        const nameInput = document.getElementById('titulo');
-        const descriptionInput = document.getElementById('descripcion');
+        const tituloInput = document.getElementById('titulo');
+        const descripcionInput = document.getElementById('descripcion');
         const cantidadInput = document.getElementById('cantidad');
 
         //Crea el objeto de datos para enviar
-        const newData = {
-            Titulo: nameInput.value,
-            Descripcion: descriptionInput.value,
+        const newProd = {
+            Titulo: tituloInput.value,
+            Descripcion: descripcionInput.value,
             Cantidad: parseInt(cantidadInput.value, 10) || 0,
             Completed: false 
         };
@@ -88,21 +88,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(newData)
+                body: JSON.stringify(newProd)
             });
 
             if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
             //Limpia los campos del formulario
             nameInput.value = '';
-            descriptionInput.value = '';
+            descripcionInput.value = '';
             cantidadInput.value = '';
 
             //Refresca la lista para mostrar el nuevo ítem
-            fetchAndRenderEntities();
+            fetchAndRenderProductos();
 
         } catch (error) {
-            console.error('Error al crear la entidad:', error);
+            console.error('Error al crear el producto:', error);
         }
     }
 
@@ -128,10 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
                 
                 //Recarga la lista para mostrar que el ítem fue eliminado
-                fetchAndRenderEntities(); 
+                fetchAndRenderProductos(); 
 
             } catch (error) {
-                console.error('Error al eliminar la entidad:', error);
+                console.error('Error al eliminar el producto:', error);
             }
         }
 
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.classList.toggle('completed', target.checked);
 
             } catch (error) {
-                console.error('Error al actualizar la entidad:', error);
+                console.error('Error al actualizar el producto:', error);
                 //Si la API falla, revierte el checkbox a su estado anterior
                 target.checked = !target.checked;
                 alert("No se pudo actualizar el producto.");
@@ -164,12 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     //Añade el "event listener" al formulario
-    entityForm.addEventListener('submit', handleFormSubmit);
+    formProducto.addEventListener('submit', handleFormSubmit);
 
     //Añade un solo listener a toda la lista para manejar los clics
-    entityList.addEventListener('click', handleListClick);
+    listProductos.addEventListener('click', handleListClick);
 
-    //Carga la lista de entidades al iniciar la página
-    fetchAndRenderEntities();
+    //Carga la lista de productos al iniciar la página
+    fetchAndRenderProductos();
 });
 
