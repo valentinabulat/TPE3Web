@@ -22,8 +22,7 @@ func main() {
 	}
 	defer dbconn.Close()
 
-	// desde aca
-
+	// crea las tablas (if not exists)
 	schemaSQL, err := os.ReadFile("db/schema/schema.sql")
 	if err != nil {
 		log.Fatalf("failed to read schema.sql: %v", err)
@@ -35,14 +34,11 @@ func main() {
 	}
 	log.Println("Schema ejecutado correctamente")
 
-	// hasta aca
-	// hacerlo con migraciones? para no crear la tabla cada vez que se corre el programa
-
-	// crear insancias de queries
+	// crear instancias de queries
 	queries := db.New(dbconn)
 	//ctx := context.Background()
 
-	// crear instancia de api
+	// crear instancia de api (nos conecta a la db)
 	api := handlers.NewAPI(queries)
 
 	mux := http.NewServeMux()

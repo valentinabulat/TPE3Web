@@ -69,7 +69,7 @@ POST http://localhost:8080/products
 {
     "titulo_invalido": "Test"
 }
-HTTP 400 # falla, lo crea igual y da 201 created
+HTTP 400 
 
 # 12. Intentar actualizar un producto que no existe
 PUT http://localhost:8080/products/999999

@@ -34,13 +34,13 @@ build: generate start_db
 test: start_db
 	@echo "Ejecutando tests con Hurl..."
 	@echo "Asegurate de que la API este corriendo antes de ejecutar los tests"
-	hurl --verbose tests/requests.hurl
+	hurl --test tests/requests.hurl
 
-# Detener todos los servicios
+# Detener todos los servicios. Eliminar contenedores y volúmenes (si no se elimina volúmenes, usa la imagen que ya existia)
 stop:
 	@echo "Deteniendo servicios..."
 	@-pkill $(APP_NAME)
-	@-docker compose down -v
+	@-docker compose down -v 
 	@echo "Servicios detenidos"
 
 # Limpiar archivos generados
