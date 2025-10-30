@@ -22,16 +22,16 @@ air:
 # Iniciar la API directamente
 start_server: start_db
 	@echo "Iniciando API..."
-	go run $(MAIN_PATH)
+	go run $(MAIN_PATH) &
 
 # Iniciar en modo producción
 build: generate start_db
 	@echo "Compilando e iniciando API..."
 	go build -o $(APP_NAME) $(MAIN_PATH)
-	./$(APP_NAME)
+	./$(APP_NAME) &
 
 # Ejecutar tests con Hurl
-test: start_db
+test: build
 	@echo "Ejecutando tests con Hurl..."
 	@echo "Asegurate de que la API este corriendo antes de ejecutar los tests"
 	hurl --test tests/requests.hurl

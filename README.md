@@ -47,13 +47,9 @@ make clean       - Limpia archivos generados
 make help		 - Ver todos los comandos disponibles
 
 ### Orden de ejecucion recomendado
-Iniciar base, generar sqlc e iniciar servidor:
-- make start_db
-- make generate
-- make start_server
-En una nueva terminal:
+Iniciar base, generar sqlc, iniciar servidor y ejecutar tests:
 - make test
-Luego de ejecutar los test:
+Luego de ejecutar los test se recomienda:
 - make stop
 - make clean
 
