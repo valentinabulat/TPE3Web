@@ -1,0 +1,29 @@
+package views
+
+// 'templ' es un generador de código.
+
+// Definimos un componente 'Layout'. Recibe un 'title' (string)
+// y un 'templ.Component' implícito (los hijos).
+templ Layout(title string) {
+	<!DOCTYPE html>
+	<html lang="es" data-theme="light">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			
+			<title>{ title }</title>
+			
+            //para no tener que descargarlo
+			<link 
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+			/>
+		</head>
+		<body>
+			<main class="container">
+            //Aca se renderizará el contenido de los otros componentes cuando se llame al Layout.
+				{ children... }
+			</main>
+		</body>
+	</html>
+}

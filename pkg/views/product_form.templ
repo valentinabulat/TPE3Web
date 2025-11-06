@@ -1,0 +1,39 @@
+package views
+
+// El formulario no necesita parámetros de entrada ya que su único trabajo es
+// renderizar la estructura estática para la entrada de datos.
+
+templ ProductForm() {
+	<article>
+		<header>
+			<h2>Agregar Nueva Entidad (Producto)</h2>
+		</header>
+		
+		<form method="POST" action="/producto/nuevo">
+			
+			<div>
+				<label for="titulo">Nombre/Título:</label>
+				<input type="text" id="titulo" name="titulo" placeholder="Nombre del producto" required/>
+			</div>
+			
+			<div>
+				<label for="descripcion">Descripción:</label>
+				<input type="text" id="descripcion" name="descripcion" placeholder="Breve descripción" required/>
+			</div>
+			
+			<div>
+				<label for="cantidad">Cantidad:</label>
+				<input 
+					type="number" 
+					id="cantidad" 
+					name="cantidad" 
+					required 
+					min="1" 
+					value="1"
+				/>
+			</div>
+			
+			<button type="submit">Guardar Entidad</button>
+		</form>
+	</article>
+}

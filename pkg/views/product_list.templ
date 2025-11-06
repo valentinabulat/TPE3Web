@@ -1,0 +1,45 @@
+package views
+
+import(
+    "github.com/valentinabulat/TPE3Web/pkg/models"
+)
+
+// El componente debe recibir los datos.
+// Recibe un slice (array) de tu modelo Producto.
+templ ProductList(productos []models.Producto) {
+	
+	<article>
+		<header>
+			<h2>Productos en la Lista</h2>
+		</header>
+		
+		<table>
+			<thead>
+				<tr>
+					<th>Título</th>
+					<th>Descripción</th>
+					<th>Cantidad</th>
+				</tr>
+			</thead>
+			<tbody>
+			
+				if len(productos) == 0 {
+					<tr>
+						<td colspan="3" style="text-align: center;">
+							La lista está vacía. Agrega el primer producto.
+						</td>
+					</tr>
+				} else {
+					
+					for _, p := range productos {
+						<tr>
+							<td><strong>{ p.Titulo }</strong></td>
+							<td>{ p.Descripcion }</td>
+							<td style="text-align: right;">{ p.Cantidad }</td>
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</article>
+}
