@@ -3,16 +3,19 @@ package views
 // El formulario no necesita parámetros de entrada ya que su único trabajo es
 // renderizar la estructura estática para la entrada de datos.
 
+//Captura la información de un nuevo producto que el usuario desea crear y 
+//la envia al servidor para ser guardada.
+
 templ ProductForm() {
 	<article>
 		<header>
-			<h2>Agregar Nueva Entidad (Producto)</h2>
+			<h2>Agregar nuevo producto</h2>
 		</header>
 		
-		<form method="POST" action="/producto/nuevo">
+		<form method="POST" action="/producto/nuevo"> //cambiar URL
 			
 			<div>
-				<label for="titulo">Nombre/Título:</label>
+				<label for="titulo">Nombre:</label>
 				<input type="text" id="titulo" name="titulo" placeholder="Nombre del producto" required/>
 			</div>
 			
