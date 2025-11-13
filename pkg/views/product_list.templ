@@ -1,12 +1,12 @@
 package views
 
 import(
-    "github.com/valentinabulat/TPE3Web/pkg/models"
+    "github.com/valentinabulat/TPE3Web/internal/db"
 )
 
 // El componente debe recibir los datos.
 // Recibe un slice (array) de tu modelo Producto.
-templ ProductList(productos []models.Producto) {
+templ ProductList(productos []db.ListProductosRow) {
 	
 	<article>
 		<header>

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	
 	"github.com/valentinabulat/TPE3Web/pkg/views"
-	"github.com/valentinabulat/TPE3Web/pkg/handlers"
+
 
 	_ "github.com/lib/pq"
 	"github.com/valentinabulat/TPE3Web/internal/db"
@@ -37,26 +37,11 @@ func main() {
 	}
 	log.Println("Schema ejecutado correctamente")
 
-	// hasta aca
-	// hacerlo con migraciones? para no crear la tabla cada vez que se corre el programa
-
-	// crear insancias de queries
 	queries := db.New(dbconn)
-	//ctx := context.Background()
-
-	// crear instancia de api
-	//api := handlers.NewAPI(queries)
-
-	//mux := http.NewServeMux()
-	//fs := http.FileServer(http.Dir("./static"))
-
-	// configurar endpoints
-	//mux.HandleFunc("/products", api.ProductsHandler)
-	//mux.HandleFunc("/products/", api.ProductHandler)
-	//mux.Handle("/", fs)
+	
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		//Obtenga todos los registros de la base de datos usando el método List... de sqlc
-		productos, err := queries.ListProducts(r.Context())
+		productos, err := queries.ListProductos(r.Context())
 		if err != nil {
 			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
 			return
@@ -70,7 +55,7 @@ func main() {
 			http.Error(w, "Error al renderizar la página", http.StatusInternalServerError)
 			return
 		}
-	}
+	})
 
 	http.HandleFunc("POST /products", func(w http.ResponseWriter, r *http.Request) {
 		//Parsee los datos del formulario.
@@ -103,12 +88,15 @@ func main() {
 			return
 		}
 
+		productoACrear := db.CreateProductoParams{
+			Titulo:      titulo,                
+			Descripcion: descripcion,           
+			Cantidad:    int32(cantidad),       
+		}
+
 		//Inserte un nuevo registro en la base de datos usando el método Create... de sqlc.
-		err := queries.CreateProduct(r.Context(), db.CreateProductParams{
-			Titulo:  titulo, 
-			Descripcion: descripcion,
-			Cantidad: int32(cantidad), // CHEQUEAR que los valores sean del tipo correcto
-		})
+		_, err = queries.CreateProducto(r.Context(), productoACrear)
+
 		if err != nil {
 			http.Error(w, "Error al crear el producto", http.StatusInternalServerError)
 			return
@@ -116,7 +104,7 @@ func main() {
 
 		// Redirija al usuario de vuelta a la página principal.
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
+	})
 	
 	// iniciar servidor
 	log.Printf("Servidor escuchando en http://localhost:8080")
