@@ -12,3 +12,7 @@
 
 # air
 .air.toml
+
+# IDEs
+.vscode/
+.idea/

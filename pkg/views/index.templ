@@ -1,0 +1,11 @@
+package views
+
+import "github.com/valentinabulat/TPE3Web/db" 
+
+templ IndexPage(products []db.Producto) {
+    @Layout("Lista de Productos") {
+        <h1>Productos</h1>
+        @ProductForm()
+        @ProductList(products)
+    }
+}
