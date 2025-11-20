@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	
-	"github.com/valentinabulat/TPE3Web/pkg/views"
 
+	"github.com/valentinabulat/TPE3Web/pkg/views"
 
 	_ "github.com/lib/pq"
 	"github.com/valentinabulat/TPE3Web/internal/db"
@@ -38,7 +37,7 @@ func main() {
 	log.Println("Schema ejecutado correctamente")
 
 	queries := db.New(dbconn)
-	
+
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		//Obtenga todos los registros de la base de datos usando el método List... de sqlc
 		productos, err := queries.ListProductos(r.Context())
@@ -46,11 +45,11 @@ func main() {
 			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
 			return
 		}
-		
+
 		component := views.IndexPage(productos)
 
 		// Renderice el componente completo en el http.ResponseWriter.
-		err = component.Render(r.Context(),w)
+		err = component.Render(r.Context(), w)
 		if err != nil {
 			http.Error(w, "Error al renderizar la página", http.StatusInternalServerError)
 			return
@@ -68,7 +67,7 @@ func main() {
 		titulo := r.FormValue("titulo")
 		descripcion := r.FormValue("descripcion")
 		cantidadStr := r.FormValue("cantidad")
-		
+
 		// chequear valores vacios
 		if titulo == "" || descripcion == "" || cantidadStr == "" {
 			http.Error(w, "Todos los campos son obligatorios", http.StatusBadRequest)
@@ -89,9 +88,9 @@ func main() {
 		}
 
 		productoACrear := db.CreateProductoParams{
-			Titulo:      titulo,                
-			Descripcion: descripcion,           
-			Cantidad:    int32(cantidad),       
+			Titulo:      titulo,
+			Descripcion: descripcion,
+			Cantidad:    int32(cantidad),
 		}
 
 		//Inserte un nuevo registro en la base de datos usando el método Create... de sqlc.
@@ -105,19 +104,23 @@ func main() {
 		// eliminar redireccion
 		// vuelve a consultar la lista completa de entidades.
 		// Check for HTMX request header
-		if r.Header.Get("HX-Request") == "true" {
-			// If it's an HTMX request, only render the table
-			views.UserTable(users, sortColumn, sortOrder).Render(r.Context(), w)
+		productos, err := queries.ListProductos(r.Context())
+		if err != nil {
+			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
 			return
 		}
-		// For initial page load, render the full page
-		views.UserList(users, sortColumn, sortOrder).Render(r.Context(), w)
+		if r.Header.Get("HX-Request") == "true" {
+			// If it's an HTMX request, only render the table
+			views.ProductList(productos).Render(r.Context(), w)
+			return
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 
 	})
 
 	http.HandleFunc("DELETE /products/{id}", func(w http.ResponseWriter, r *http.Request) {
 		//Obtenga el ID del producto de la URL.
-		idStr := r.URL.Path[len("/products/"):]
+		idStr := r.PathValue("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			http.Error(w, "ID inválido", http.StatusBadRequest)
@@ -125,15 +128,15 @@ func main() {
 		}
 
 		//Elimine el registro de la base de datos usando el método Delete... de sqlc.
-		err = queries.DeleteProducto(r.Context(), int32(id))
+		_, err = queries.DeleteProducto(r.Context(), int32(id))
 		if err != nil {
 			http.Error(w, "Error al eliminar el producto", http.StatusInternalServerError)
 			return
 		}
-		
+
 		w.WriteHeader(http.StatusNoContent)
 	})
-	
+
 	// iniciar servidor
 	log.Printf("Servidor escuchando en http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

@@ -2,6 +2,7 @@ package views
 
 import(
     "github.com/valentinabulat/TPE3Web/internal/db"
+	"fmt"
 )
 
 // El componente debe recibir los datos.
@@ -21,7 +22,7 @@ templ ProductList(productos []db.ListProductosRow) {
 					<th>Cantidad</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="lista-productos">
 			
 				if len(productos) == 0 {
 					<tr>
@@ -36,6 +37,15 @@ templ ProductList(productos []db.ListProductosRow) {
 							<td><strong>{ p.Titulo }</strong></td>
 							<td>{ p.Descripcion }</td>
 							<td style="text-align: right;">{ p.Cantidad }</td>
+							<td>
+								<button 
+									hx-delete={fmt.Sprintf("/products/%d", p.ID)} 
+									hx-target="closest tr" 
+									hx-swap="outerHTML"
+								>
+									<strong>Borrar</strong>
+								</button>
+							</td>
 						</tr>
 					}
 				}
