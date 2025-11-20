@@ -94,11 +94,16 @@ func main() {
 		}
 
 		//Inserte un nuevo registro en la base de datos usando el método Create... de sqlc.
-		_, err = queries.CreateProducto(r.Context(), productoACrear)
-
+		productoCreado, err := queries.CreateProducto(r.Context(), productoACrear)
 		if err != nil {
 			http.Error(w, "Error al crear el producto", http.StatusInternalServerError)
 			return
+		}
+		productoAMostrar := db.ListProductosRow{
+			ID:          productoCreado.ID, // El ID nuevo
+			Titulo:      productoCreado.Titulo,
+			Descripcion: productoCreado.Descripcion,
+			Cantidad:    productoCreado.Cantidad,
 		}
 
 		// eliminar redireccion
@@ -110,11 +115,16 @@ func main() {
 			return
 		}
 		if r.Header.Get("HX-Request") == "true" {
-			// If it's an HTMX request, only render the table
-			views.ProductList(productos).Render(r.Context(), w)
+			// 3. IMPORTANTE: Renderiza SOLO LA FILA (ProductRow), no la lista entera
+			// Aquí le pasas solo el "nuevoProducto" que acabas de crear
+			component := views.ProductRow(productoAMostrar)
+
+			// Al hacer esto, HTMX tomará este <tr> y lo pondrá al final de tu <tbody>
+			component.Render(r.Context(), w)
 			return
 		}
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+
+		views.ProductList(productos).Render(r.Context(), w)
 
 	})
 
@@ -134,7 +144,7 @@ func main() {
 			return
 		}
 
-		w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusOK) // 200 OK
 	})
 
 	// iniciar servidor

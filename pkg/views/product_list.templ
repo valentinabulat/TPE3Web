@@ -33,23 +33,27 @@ templ ProductList(productos []db.ListProductosRow) {
 				} else {
 					
 					for _, p := range productos {
-						<tr>
-							<td><strong>{ p.Titulo }</strong></td>
-							<td>{ p.Descripcion }</td>
-							<td style="text-align: right;">{ p.Cantidad }</td>
-							<td>
-								<button 
-									hx-delete={fmt.Sprintf("/products/%d", p.ID)} 
-									hx-target="closest tr" 
-									hx-swap="outerHTML"
-								>
-									<strong>Borrar</strong>
-								</button>
-							</td>
-						</tr>
+						@ProductRow(p)
 					}
 				}
 			</tbody>
 		</table>
 	</article>
+}
+
+templ ProductRow (p db.ListProductosRow){
+	<tr>
+		<td><strong>{ p.Titulo }</strong></td>
+		<td>{ p.Descripcion }</td>
+		<td style="text-align: center;">{ p.Cantidad }</td>
+		<td>
+			<button 
+				hx-delete={fmt.Sprintf("/products/%d", p.ID)} 
+				hx-target="closest tr" 
+				hx-swap="outerHTML"
+			>
+				<strong>Borrar</strong>
+			</button>
+		</td>
+	</tr>
 }

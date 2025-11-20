@@ -6,7 +6,7 @@ templ ProductForm() {
 			<h2>Agregar nuevo producto</h2>
 		</header>
 		
-		<form method="POST" action="/products" hx-post="/products" hx-target="lista-productos" hx-swap="beforeend"> 
+		<form hx-post="/products" hx-target="#lista-productos" hx-swap="beforeend"> 
 			
 			<div>
 				<label for="titulo">Nombre:</label>

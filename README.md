@@ -5,6 +5,7 @@
 	- sqlc
     - Docker 
 	- Make
+	- Templ
 
 
 ### Estructura del proyecto:
@@ -19,13 +20,12 @@
 	│ │  └── schema/
 	│ │      └── schema.sql
 	│ ├── pkg/
-	│ │  ├── handlers/
-	│ │  │   └── products.go
-	│ │  └── models/
-	│ │      └── product.go
+	│ │  └── views/
+	│ │      ├── index.templ
+	│ │      ├── layout.templ
+	│ │      ├── product_form.templ
+	│ │      └── product_list.templ
 	│ ├── static/
-	│ │  ├── app.js
-	│ │  ├── index.html
 	│ │  └── styles.css
 	│ └── tests/
 	│	   └── requests.hurl
@@ -40,7 +40,7 @@
 
 ### Comandos de ejecucion:
 make start_db     - Inicia la base de datos PostgreSQL
-make generate     - Genera código con sqlc
+make generate     - Genera código con sqlc y templ
 make air         - Inicia el servidor con air
 make start_server - Inicia la API directamente con go run
 make build       - Compila e inicia la API
@@ -50,9 +50,7 @@ make clean       - Limpia archivos generados
 make help		 - Ver todos los comandos disponibles
 
 ### Orden de ejecucion recomendado
-Iniciar base, generar sqlc e iniciar servidor:
-- make start_db
-- make generate
+Iniciar base, generar sqlc, templ, e iniciar servidor:
 - make start_server
 Abrir en el navegador la web app (localhost:8080)
 Luego para eliminar archivos autogenerados, y cerrar la base y el servidor:

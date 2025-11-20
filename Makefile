@@ -13,6 +13,7 @@ start_db:
 generate:
 	@echo "Generando codigo con sqlc..."
 	sqlc generate
+	templ generate
 
 # Desarrollo con hot-reload usando Air
 air:
@@ -20,7 +21,7 @@ air:
 	air
 
 # Iniciar la API directamente
-start_server: start_db
+start_server: generate start_db
 	@echo "Iniciando API..."
 	go run $(MAIN_PATH)
 

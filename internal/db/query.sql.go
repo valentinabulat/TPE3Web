@@ -11,6 +11,8 @@ import (
 )
 
 const createProducto = `-- name: CreateProducto :one
+/*
+
 WITH nuevo_producto AS (
   INSERT INTO producto (titulo, descripcion)
   VALUES ($1, $2)
@@ -19,7 +21,22 @@ WITH nuevo_producto AS (
 INSERT INTO lista_productos (ID_producto, cantidad)
 SELECT ID, $3
 FROM nuevo_producto
-RETURNING id, id_producto, cantidad, comprado
+RETURNING *;
+*/
+
+WITH nuevo_producto AS (
+  INSERT INTO producto (titulo, descripcion)
+  VALUES ($1, $2)
+  RETURNING id, titulo, descripcion -- 1. Asegúrate de retornar todo aquí
+)
+INSERT INTO lista_productos (ID_producto, cantidad)
+SELECT id, $3
+FROM nuevo_producto
+RETURNING 
+    (SELECT id FROM nuevo_producto) as id,          -- El ID del producto
+    (SELECT titulo FROM nuevo_producto) as titulo,  -- El Título original
+    (SELECT descripcion FROM nuevo_producto) as descripcion, -- La Descripción
+    cantidad
 `
 
 type CreateProductoParams struct {
@@ -28,14 +45,21 @@ type CreateProductoParams struct {
 	Cantidad    int32
 }
 
-func (q *Queries) CreateProducto(ctx context.Context, arg CreateProductoParams) (ListaProducto, error) {
+type CreateProductoRow struct {
+	ID          int32
+	Titulo      string
+	Descripcion string
+	Cantidad    int32
+}
+
+func (q *Queries) CreateProducto(ctx context.Context, arg CreateProductoParams) (CreateProductoRow, error) {
 	row := q.db.QueryRowContext(ctx, createProducto, arg.Titulo, arg.Descripcion, arg.Cantidad)
-	var i ListaProducto
+	var i CreateProductoRow
 	err := row.Scan(
 		&i.ID,
-		&i.IDProducto,
+		&i.Titulo,
+		&i.Descripcion,
 		&i.Cantidad,
-		&i.Comprado,
 	)
 	return i, err
 }
@@ -122,6 +146,7 @@ func (q *Queries) ListProductos(ctx context.Context) ([]ListProductosRow, error)
 }
 
 const updateProducto = `-- name: UpdateProducto :one
+    
 UPDATE lista_productos
 SET comprado = NOT comprado
 FROM producto p
@@ -139,6 +164,7 @@ type UpdateProductoRow struct {
 	Comprado    sql.NullBool
 }
 
+// La cantidad insertada
 func (q *Queries) UpdateProducto(ctx context.Context, id int32) (UpdateProductoRow, error) {
 	row := q.db.QueryRowContext(ctx, updateProducto, id)
 	var i UpdateProductoRow
