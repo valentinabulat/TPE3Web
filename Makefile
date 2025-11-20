@@ -13,6 +13,7 @@ start_db:
 generate:
 	@echo "Generando codigo con sqlc..."
 	sqlc generate
+	templ generate
 
 # Desarrollo con hot-reload usando Air
 air:

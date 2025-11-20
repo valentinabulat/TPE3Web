@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	
-	"github.com/valentinabulat/TPE3Web/pkg/views"
 
+	"github.com/valentinabulat/TPE3Web/pkg/views"
 
 	_ "github.com/lib/pq"
 	"github.com/valentinabulat/TPE3Web/internal/db"
@@ -38,7 +37,7 @@ func main() {
 	log.Println("Schema ejecutado correctamente")
 
 	queries := db.New(dbconn)
-	
+
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		//Obtenga todos los registros de la base de datos usando el método List... de sqlc
 		productos, err := queries.ListProductos(r.Context())
@@ -46,11 +45,11 @@ func main() {
 			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
 			return
 		}
-		
+
 		component := views.IndexPage(productos)
 
 		// Renderice el componente completo en el http.ResponseWriter.
-		err = component.Render(r.Context(),w)
+		err = component.Render(r.Context(), w)
 		if err != nil {
 			http.Error(w, "Error al renderizar la página", http.StatusInternalServerError)
 			return
@@ -68,7 +67,7 @@ func main() {
 		titulo := r.FormValue("titulo")
 		descripcion := r.FormValue("descripcion")
 		cantidadStr := r.FormValue("cantidad")
-		
+
 		// chequear valores vacios
 		if titulo == "" || descripcion == "" || cantidadStr == "" {
 			http.Error(w, "Todos los campos son obligatorios", http.StatusBadRequest)
@@ -89,9 +88,9 @@ func main() {
 		}
 
 		productoACrear := db.CreateProductoParams{
-			Titulo:      titulo,                
-			Descripcion: descripcion,           
-			Cantidad:    int32(cantidad),       
+			Titulo:      titulo,
+			Descripcion: descripcion,
+			Cantidad:    int32(cantidad),
 		}
 
 		//Inserte un nuevo registro en la base de datos usando el método Create... de sqlc.
@@ -105,7 +104,7 @@ func main() {
 		// Redirija al usuario de vuelta a la página principal.
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
-	
+
 	// iniciar servidor
 	log.Printf("Servidor escuchando en http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
