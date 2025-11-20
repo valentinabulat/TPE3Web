@@ -102,8 +102,36 @@ func main() {
 			return
 		}
 
-		// Redirija al usuario de vuelta a la página principal.
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		// eliminar redireccion
+		// vuelve a consultar la lista completa de entidades.
+		// Check for HTMX request header
+		if r.Header.Get("HX-Request") == "true" {
+			// If it's an HTMX request, only render the table
+			views.UserTable(users, sortColumn, sortOrder).Render(r.Context(), w)
+			return
+		}
+		// For initial page load, render the full page
+		views.UserList(users, sortColumn, sortOrder).Render(r.Context(), w)
+
+	})
+
+	http.HandleFunc("DELETE /products/{id}", func(w http.ResponseWriter, r *http.Request) {
+		//Obtenga el ID del producto de la URL.
+		idStr := r.URL.Path[len("/products/"):]
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			http.Error(w, "ID inválido", http.StatusBadRequest)
+			return
+		}
+
+		//Elimine el registro de la base de datos usando el método Delete... de sqlc.
+		err = queries.DeleteProducto(r.Context(), int32(id))
+		if err != nil {
+			http.Error(w, "Error al eliminar el producto", http.StatusInternalServerError)
+			return
+		}
+		
+		w.WriteHeader(http.StatusNoContent)
 	})
 	
 	// iniciar servidor
