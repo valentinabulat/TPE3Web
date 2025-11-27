@@ -39,7 +39,7 @@ func main() {
 	queries := db.New(dbconn)
 
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		//Obtenga todos los registros de la base de datos usando el método List... de sqlc
+		//Obtiene todos los registros de la base de datos usando el método List... de sqlc
 		productos, err := queries.ListProductos(r.Context())
 		if err != nil {
 			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
@@ -48,7 +48,7 @@ func main() {
 
 		component := views.IndexPage(productos)
 
-		// Renderice el componente completo en el http.ResponseWriter.
+		// Renderiza el componente completo en el http.ResponseWriter.
 		err = component.Render(r.Context(), w)
 		if err != nil {
 			http.Error(w, "Error al renderizar la página", http.StatusInternalServerError)
@@ -57,31 +57,31 @@ func main() {
 	})
 
 	http.HandleFunc("POST /products", func(w http.ResponseWriter, r *http.Request) {
-		//Parsee los datos del formulario.
+		//Parsea los datos del formulario.
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Error al parsear el formulario", http.StatusBadRequest)
 			return
 		}
 
-		//Obtenga los valores del formulario.
+		//Obtiene los valores del formulario.
 		titulo := r.FormValue("titulo")
 		descripcion := r.FormValue("descripcion")
 		cantidadStr := r.FormValue("cantidad")
 
-		// chequear valores vacios
+		// chequea valores vacios
 		if titulo == "" || descripcion == "" || cantidadStr == "" {
 			http.Error(w, "Todos los campos son obligatorios", http.StatusBadRequest)
 			return
 		}
 
-		// formatear cantidad a int
+		// formatea cantidad a int
 		cantidad, err := strconv.Atoi(cantidadStr)
 		if err != nil {
 			http.Error(w, "Cantidad inválida", http.StatusBadRequest)
 			return
 		}
 
-		// chequear cantidad valida
+		// chequea cantidad valida
 		if cantidad < 0 {
 			http.Error(w, "La cantidad no puede ser negativa", http.StatusBadRequest)
 			return
@@ -93,7 +93,7 @@ func main() {
 			Cantidad:    int32(cantidad),
 		}
 
-		//Inserte un nuevo registro en la base de datos usando el método Create... de sqlc.
+		//Inserta un nuevo registro en la base de datos usando el método Create... de sqlc.
 		_, err = queries.CreateProducto(r.Context(), productoACrear)
 
 		if err != nil {
@@ -101,7 +101,7 @@ func main() {
 			return
 		}
 
-		// Redirija al usuario de vuelta a la página principal.
+		// Redirije al usuario de vuelta a la página principal.
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
