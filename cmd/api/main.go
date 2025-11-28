@@ -5,12 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
-
-	"github.com/valentinabulat/TPE3Web/pkg/views"
 
 	_ "github.com/lib/pq"
 	"github.com/valentinabulat/TPE3Web/internal/db"
+	"github.com/valentinabulat/TPE3Web/internal/handlers"
 )
 
 func main() {
@@ -38,114 +36,13 @@ func main() {
 
 	queries := db.New(dbconn)
 
-	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		//Obtiene todos los registros de la base de datos usando el método List de sqlc
-		productos, err := queries.ListProductos(r.Context())
-		if err != nil {
-			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
-			return
-		}
+	// Crear la instancia del Handler con las dependencias (queries)
+    h := handlers.NewHandler(queries)
 
-		component := views.IndexPage(productos)
-
-		// Renderiza el componente completo en el http.ResponseWriter.
-		err = component.Render(r.Context(), w)
-		if err != nil {
-			http.Error(w, "Error al renderizar la página", http.StatusInternalServerError)
-			return
-		}
-	})
-
-	http.HandleFunc("POST /products", func(w http.ResponseWriter, r *http.Request) {
-		//Parsea los datos del formulario.
-		if err := r.ParseForm(); err != nil {
-			http.Error(w, "Error al parsear el formulario", http.StatusBadRequest)
-			return
-		}
-
-		//Obtiene los valores del formulario.
-		titulo := r.FormValue("titulo")
-		descripcion := r.FormValue("descripcion")
-		cantidadStr := r.FormValue("cantidad")
-
-		// chequea valores vacios
-		if titulo == "" || descripcion == "" || cantidadStr == "" {
-			http.Error(w, "Todos los campos son obligatorios", http.StatusBadRequest)
-			return
-		}
-
-		// formatea cantidad a int
-		cantidad, err := strconv.Atoi(cantidadStr)
-		if err != nil {
-			http.Error(w, "Cantidad inválida", http.StatusBadRequest)
-			return
-		}
-
-		// chequea cantidad valida
-		if cantidad < 0 {
-			http.Error(w, "La cantidad no puede ser negativa", http.StatusBadRequest)
-			return
-		}
-
-		productoACrear := db.CreateProductoParams{
-			Titulo:      titulo,
-			Descripcion: descripcion,
-			Cantidad:    int32(cantidad),
-		}
-
-		//Inserta un nuevo registro en la base de datos usando el método Create de sqlc.
-		productoCreado, err := queries.CreateProducto(r.Context(), productoACrear)
-		if err != nil {
-			http.Error(w, "Error al crear el producto", http.StatusInternalServerError)
-			return
-		}
-		productoAMostrar := db.ListProductosRow{
-			ID:          productoCreado.ID, // El ID nuevo
-			Titulo:      productoCreado.Titulo,
-			Descripcion: productoCreado.Descripcion,
-			Cantidad:    productoCreado.Cantidad,
-		}
-
-		// elimina redireccion
-		// vuelve a consultar la lista completa de entidades.
-		// Check for HTMX request header
-		productos, err := queries.ListProductos(r.Context())
-		if err != nil {
-			http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
-			return
-		}
-		if r.Header.Get("HX-Request") == "true" {
-			// Renderiza SOLO LA FILA (ProductRow), no la lista entera
-			// Aca le pasamos solo el "nuevoProducto" que acabamos de crear
-			component := views.ProductRow(productoAMostrar)
-
-			// HTMX toma este <tr> y lo pone al final del <tbody>
-			component.Render(r.Context(), w)
-			return
-		}
-
-		views.ProductList(productos).Render(r.Context(), w)
-
-	})
-
-	http.HandleFunc("DELETE /products/{id}", func(w http.ResponseWriter, r *http.Request) {
-		//Obtiene el ID del producto de la URL.
-		idStr := r.PathValue("id")
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			http.Error(w, "ID inválido", http.StatusBadRequest)
-			return
-		}
-
-		//Elimina el registro de la base de datos usando el método Delete de sqlc.
-		_, err = queries.DeleteProducto(r.Context(), int32(id))
-		if err != nil {
-			http.Error(w, "Error al eliminar el producto", http.StatusInternalServerError)
-			return
-		}
-
-		w.WriteHeader(http.StatusOK) // 200 OK
-	})
+    // Definición de Handlers
+    http.HandleFunc("GET /", h.GetIndex)
+    http.HandleFunc("POST /products", h.PostProduct)
+    http.HandleFunc("DELETE /products/{id}", h.DeleteProduct)
 
 	// iniciar servidor
 	log.Printf("Servidor escuchando en http://localhost:8080")
